@@ -6,7 +6,7 @@ $(function() {
     getResults(searchValue);
   });
 
-  (function getResults(searchValue) {
+  function getResults(searchValue) {
     $.getJSON('https://www.googleapis.com/youtube/v3/search',{
         part: 'snippet',
         key: 'AIzaSyCjyPXRl8Wn8HYwwJIyvmJlX8OPL6-PcP4',
@@ -20,7 +20,7 @@ $(function() {
           });
         }
     )
-  });
+  }
 
   function showResults(data) {
     var output;
