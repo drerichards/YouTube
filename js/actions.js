@@ -24,18 +24,25 @@ $(function() {
 
   function showResults(data) {
     var output;
+    var iframe;
     var vidPlayLink;
     $.each(data, function(index, value) {
       var vidTitle = data.snippet.title;
       var vidID = data.id.videoId;
       var vidThumb = data.snippet.thumbnails.medium.url;
 
-      vidPlayLink = 'https://www.youtube.com/watch?v='+vidID;
+      vidPlayLink = 'https://www.youtube.com/embed/'+vidID;
 
-
-      var link = '<p><a href ="' + vidPlayLink + '"><img src='+ vidThumb +'></a></p><p>'+vidTitle+'</p>';
+      var link = '<p><a href ="#"><img src='+ vidThumb +'></a></p><p>'+vidTitle+'</p>';
       output = '<li>'+link+'</li>';
     });
+
     $('#search_results ul').append(output);
+    $('li').click(function(event) {
+      $('#iframe_container').html(('<iframe src="'+vidPlayLink+'" frameborder="0" allowfullscreen></iframe>'));
+      event.preventdefault();
+    });
   }
+
+
 });
