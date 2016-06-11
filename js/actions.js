@@ -1,48 +1,48 @@
 $(function() {
-  $('#search_value').submit(function(event) {
-    event.preventDefault();
-    $('li').remove('');
-    var searchValue = $('#query').val();
-    getResults(searchValue);
-  });
-
-  function getResults(searchValue) {
-    $.getJSON('https://www.googleapis.com/youtube/v3/search',{
+    $(function defaultSearch(params){
+      var searchValue = $('#query').val();
+      var params = {
         part: 'snippet',
         key: 'AIzaSyCjyPXRl8Wn8HYwwJIyvmJlX8OPL6-PcP4',
-        maxResults: 10,
-        type: 'video',
-        q: searchValue},
-        function(results){
-          $.each(results.items, function(i, data){
-            console.log(data);
-            showResults(data);
-          });
-        }
-    )
-  }
+        q: searchValue,
+        maxResults: 10
+      };
+      url = 'https://www.googleapis.com/youtube/v3/search';
+
+      $.getJSON(url, params, function(data){
+        console.log(data);
+        $('li').remove();
+        showResults(data);
+      });
+
+      $('#nextBtn').click(function(nextPageToken) {
+        showResults(nextPageToken);
+      });
+
+      $('#search_value').submit(function(event) {
+        event.preventDefault();
+        defaultSearch();
+      });
+    });
+  });
 
   function showResults(data) {
     var output;
     var iframe;
     var vidPlayLink;
-    $.each(data, function(index, value) {
-      var vidTitle = data.snippet.title;
-      var vidID = data.id.videoId;
-      var vidThumb = data.snippet.thumbnails.medium.url;
-
-      vidPlayLink = 'https://www.youtube.com/embed/'+vidID;
+    for (var i = 0; i < data.items.length; i++) {
+      var vidTitle = data.items[i].snippet.title;
+      var vidThumb = data.items[i].snippet.thumbnails.medium.url;
 
       var link = '<p><a href ="#"><img src='+ vidThumb +'></a></p><p>'+vidTitle+'</p>';
       output = '<li>'+link+'</li>';
-    });
+      $('#search_results ul').append(output);
+    };
 
-    $('#search_results ul').append(output);
     $('li').click(function(event) {
-      $('#iframe_container').html(('<iframe src="'+vidPlayLink+'" frameborder="0" allowfullscreen></iframe>'));
-      event.preventdefault();
+      var vidID = data.items[$(this).index()].id.videoId;
+      vidPlayLink = 'https://www.youtube.com/embed/'+vidID;
+      $('#iframe_container').html('<iframe src="'+vidPlayLink+'" frameborder="0" allowfullscreen></iframe>');
+      event.preventDefault();
     });
   }
-
-
-});
